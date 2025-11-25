@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Week 2 API Tester</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f5f5f5;
+            padding: 20px;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        h1 {
+            color: #232F3E;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+            padding: 20px;
+            background: #f9f9f9;
+            border-radius: 6px;
+            border-left: 4px solid #FF9900;
+        }
+        .section h2 {
+            color: #232F3E;
+            margin-bottom: 15px;
+            font-size: 18px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: block;
+            margin-bottom: 5px;
+            color: #333;
+            font-weight: 500;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+        button {
+            background: #FF9900;
+            color: white;
+            border: none;
+            padding: 12px 24px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: background 0.2s;
+        }
+        button:hover {
+            background: #ec8f00;
+        }
+        button:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+        }
+        .response {
+            margin-top: 15px;
+            padding: 15px;
+            background: #f0f0f0;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .response.success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+        .response.error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+        .token-display {
+            padding: 10px;
+            background: #fff3cd;
+            border: 1px solid #ffc107;
+            border-radius: 4px;
+            margin-top: 10px;
+            word-break: break-all;
+        }
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+            margin-right: 10px;
+        }
+        .status-badge.success { background: #d4edda; color: #155724; }
+        .status-badge.error { background: #f8d7da; color: #721c24; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Week 2 API Test Page</h1>
+        <p class="subtitle">Test your Inventory Management Stock API endpoints</p>
+
+        <!-- Login Section -->
+        <div class="section">
+            <h2>🔑 Step 1: Login</h2>
+            <div class="form-group">
+                <label>Email:</label>
+                <input type="email" id="loginEmail" value="admin@example.com">
+            </div>
+            <div class="form-group">
+                <label>Password:</label>
+                <input type="password" id="loginPassword" value="password">
+            </div>
+            <button onclick="testLogin()">Login</button>
+            <div id="loginResponse"></div>
+            <div id="tokenDisplay" style="display:none;" class="token-display">
+                <strong>Token:</strong> <span id="tokenValue"></span>
+            </div>
+        </div>
+
+        <!-- Stock Summary Section -->
+        <div class="section">
+            <h2>📊 Step 2: Get Stock Summary</h2>
+            <div class="form-group">
+                <label>Product Variant ID:</label>
+                <input type="number" id="variantId" value="1">
+            </div>
+            <button onclick="testStockSummary()" id="btnStockSummary">Get Stock Summary</button>
+            <div id="stockSummaryResponse"></div>
+        </div>
+
+        <!-- Low Stock Section -->
+        <div class="section">
+            <h2>⚠️ Step 3: Get Low Stock Products</h2>
+            <button onclick="testLowStock()" id="btnLowStock">Get Low Stock Products</button>
+            <div id="lowStockResponse"></div>
+        </div>
+
+        <!-- Out of Stock Section -->
+        <div class="section">
+            <h2>❌ Step 4: Get Out of Stock Products</h2>
+            <button onclick="testOutOfStock()" id="btnOutOfStock">Get Out of Stock Products</button>
+            <div id="outOfStockResponse"></div>
+        </div>
+
+        <!-- Warehouse Breakdown Section -->
+        <div class="section">
+            <h2>🏭 Step 5: Get Stock by Warehouse</h2>
+            <div class="form-group">
+                <label>Product Variant ID:</label>
+                <input type="number" id="warehouseVariantId" value="1">
+            </div>
+            <button onclick="testWarehouseBreakdown()" id="btnWarehouse">Get Warehouse Breakdown</button>
+            <div id="warehouseResponse"></div>
+        </div>
+    </div>
+
+    <script>
+        const API_BASE = 'http://localhost:8000/api';
+        let authToken = null;
+
+        async function testLogin() {
+            const email = document.getElementById('loginEmail').value;
+            const password = document.getElementById('loginPassword').value;
+            const responseDiv = document.getElementById('loginResponse');
+            const tokenDisplay = document.getElementById('tokenDisplay');
+            const tokenValue = document.getElementById('tokenValue');
+
+            responseDiv.innerHTML = '<div class="response">Loading...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/login`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Accept': 'application/json',
+                    },
+                    body: JSON.stringify({ email, password })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    authToken = data.data.token;
+                    tokenValue.textContent = authToken;
+                    tokenDisplay.style.display = 'block';
+                    responseDiv.innerHTML = `
+                        <div class="response success">
+                            <span class="status-badge success">✅ Success</span>
+                            ${JSON.stringify(data, null, 2)}
+                        </div>
+                    `;
+                    // Enable other test buttons
+                    document.getElementById('btnStockSummary').disabled = false;
+                    document.getElementById('btnLowStock').disabled = false;
+                    document.getElementById('btnOutOfStock').disabled = false;
+                    document.getElementById('btnWarehouse').disabled = false;
+                } else {
+                    responseDiv.innerHTML = `
+                        <div class="response error">
+                            <span class="status-badge error">❌ Error ${response.status}</span>
+                            ${JSON.stringify(data, null, 2)}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                responseDiv.innerHTML = `
+                    <div class="response error">
+                        <span class="status-badge error">❌ Network Error</span>
+                        ${error.message}
+                        <br><br>
+                        <strong>Make sure backend server is running on http://localhost:8000</strong>
+                    </div>
+                `;
+            }
+        }
+
+        async function testStockSummary() {
+            if (!authToken) {
+                alert('Please login first!');
+                return;
+            }
+
+            const variantId = document.getElementById('variantId').value;
+            const responseDiv = document.getElementById('stockSummaryResponse');
+            responseDiv.innerHTML = '<div class="response">Loading...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/stock/variants/${variantId}/summary`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Accept': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    responseDiv.innerHTML = `
+                        <div class="response success">
+                            <span class="status-badge success">✅ Success</span>
+                            ${JSON.stringify(data, null, 2)}
+                        </div>
+                    `;
+                } else {
+                    responseDiv.innerHTML = `
+                        <div class="response error">
+                            <span class="status-badge error">❌ Error ${response.status}</span>
+                            ${JSON.stringify(data, null, 2)}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                responseDiv.innerHTML = `<div class="response error">❌ ${error.message}</div>`;
+            }
+        }
+
+        async function testLowStock() {
+            if (!authToken) {
+                alert('Please login first!');
+                return;
+            }
+
+            const responseDiv = document.getElementById('lowStockResponse');
+            responseDiv.innerHTML = '<div class="response">Loading...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/stock/low-stock`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Accept': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    responseDiv.innerHTML = `
+                        <div class="response success">
+                            <span class="status-badge success">✅ Success - Found ${data.meta.count} products</span>
+                            ${JSON.stringify(data, null, 2)}
+                        </div>
+                    `;
+                } else {
+                    responseDiv.innerHTML = `
+                        <div class="response error">
+                            <span class="status-badge error">❌ Error ${response.status}</span>
+                            ${JSON.stringify(data, null, 2)}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                responseDiv.innerHTML = `<div class="response error">❌ ${error.message}</div>`;
+            }
+        }
+
+        async function testOutOfStock() {
+            if (!authToken) {
+                alert('Please login first!');
+                return;
+            }
+
+            const responseDiv = document.getElementById('outOfStockResponse');
+            responseDiv.innerHTML = '<div class="response">Loading...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/stock/out-of-stock`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Accept': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    responseDiv.innerHTML = `
+                        <div class="response success">
+                            <span class="status-badge success">✅ Success - Found ${data.meta.count} products</span>
+                            ${JSON.stringify(data, null, 2)}
+                        </div>
+                    `;
+                } else {
+                    responseDiv.innerHTML = `
+                        <div class="response error">
+                            <span class="status-badge error">❌ Error ${response.status}</span>
+                            ${JSON.stringify(data, null, 2)}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                responseDiv.innerHTML = `<div class="response error">❌ ${error.message}</div>`;
+            }
+        }
+
+        async function testWarehouseBreakdown() {
+            if (!authToken) {
+                alert('Please login first!');
+                return;
+            }
+
+            const variantId = document.getElementById('warehouseVariantId').value;
+            const responseDiv = document.getElementById('warehouseResponse');
+            responseDiv.innerHTML = '<div class="response">Loading...</div>';
+
+            try {
+                const response = await fetch(`${API_BASE}/stock/variants/${variantId}/by-warehouse`, {
+                    headers: {
+                        'Authorization': `Bearer ${authToken}`,
+                        'Accept': 'application/json',
+                    }
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    responseDiv.innerHTML = `
+                        <div class="response success">
+                            <span class="status-badge success">✅ Success</span>
+                            ${JSON.stringify(data, null, 2)}
+                        </div>
+                    `;
+                } else {
+                    responseDiv.innerHTML = `
+                        <div class="response error">
+                            <span class="status-badge error">❌ Error ${response.status}</span>
+                            ${JSON.stringify(data, null, 2)}
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                responseDiv.innerHTML = `<div class="response error">❌ ${error.message}</div>`;
+            }
+        }
+
+        // Disable test buttons initially
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('btnStockSummary').disabled = true;
+            document.getElementById('btnLowStock').disabled = true;
+            document.getElementById('btnOutOfStock').disabled = true;
+            document.getElementById('btnWarehouse').disabled = true;
+        });
+    </script>
+</body>
+</html>
