@@ -41,12 +41,9 @@ RUN mkdir -p storage/framework/{sessions,views,cache} \
     && mkdir -p bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
-# Cache routes and views (but NOT config - needs runtime env vars)
-RUN php artisan route:cache || true
-RUN php artisan view:cache || true
-
+# Don't cache during build - do it at runtime
 # Expose port (Render sets PORT env variable)
 EXPOSE 10000
 
-# Start command
-CMD php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-10000}
+# Start command - clear caches, migrate, then serve
+CMD php artisan config:clear && php artisan route:clear && php artisan cache:clear && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-10000}
