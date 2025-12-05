@@ -1,14 +1,15 @@
 import { Link, useLocation } from 'react-router-dom';
 import { useState } from 'react';
+import PropTypes from 'prop-types';
 
-const Sidebar = () => {
+const Sidebar = ({ isOpen, onClose, isMobile }) => {
   const location = useLocation();
   const [expandedSections, setExpandedSections] = useState({
     purchasing: false,
     sales: false,
     inventory: false,
     replenishment: false,
-    reports: true, // Week 9 - Expand reports by default
+    reports: true,
   });
 
   const toggleSection = (section) => {
@@ -25,10 +26,15 @@ const Sidebar = () => {
     return location.pathname.startsWith(path);
   };
 
+  const handleLinkClick = () => {
+    if (isMobile) {
+      onClose();
+    }
+  };
+
   const mainNav = [
     { name: 'Dashboard', path: '/', icon: '📊' },
     { name: 'Products', path: '/products', icon: '📦' },
-    { name: 'Warehouses', path: '/warehouses', icon: '🏭' },
   ];
 
   const purchasingNav = [
@@ -66,10 +72,33 @@ const Sidebar = () => {
     { name: 'Settings', path: '/settings', icon: '⚙️' },
   ];
 
+  // Base classes for sidebar
+  const sidebarClasses = `
+    bg-[#232F3E] text-white flex flex-col
+    ${isMobile
+      ? `fixed inset-y-0 left-0 z-50 w-72 transform transition-transform duration-300 ease-in-out ${
+          isOpen ? 'translate-x-0' : '-translate-x-full'
+        }`
+      : 'w-64 flex-shrink-0'
+    }
+  `;
+
   return (
-    <aside className="w-64 bg-[#232F3E] text-white flex-shrink-0 flex flex-col">
-      <div className="p-4 font-bold text-xl border-b border-gray-700">
-        Inventory Pro
+    <aside className={sidebarClasses}>
+      {/* Header */}
+      <div className="p-4 font-bold text-xl border-b border-gray-700 flex items-center justify-between">
+        <span>Inventory Pro</span>
+        {isMobile && (
+          <button
+            onClick={onClose}
+            className="p-1 hover:bg-[#37475A] rounded transition"
+            aria-label="Close menu"
+          >
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+            </svg>
+          </button>
+        )}
       </div>
 
       <nav className="p-4 space-y-2 flex-1 overflow-y-auto">
@@ -78,7 +107,8 @@ const Sidebar = () => {
           <Link
             key={item.path}
             to={item.path}
-            className={`block px-4 py-2 rounded hover:bg-[#37475A] transition ${
+            onClick={handleLinkClick}
+            className={`block px-4 py-2.5 rounded hover:bg-[#37475A] transition ${
               isActive(item.path) ? 'bg-[#37475A]' : ''
             }`}
           >
@@ -102,7 +132,8 @@ const Sidebar = () => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`block px-4 py-2 rounded hover:bg-[#37475A] transition text-sm ${
+                  onClick={handleLinkClick}
+                  className={`block px-4 py-2.5 rounded hover:bg-[#37475A] transition text-sm ${
                     isActive(item.path) ? 'bg-[#37475A]' : ''
                   }`}
                 >
@@ -129,7 +160,8 @@ const Sidebar = () => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`block px-4 py-2 rounded hover:bg-[#37475A] transition text-sm ${
+                  onClick={handleLinkClick}
+                  className={`block px-4 py-2.5 rounded hover:bg-[#37475A] transition text-sm ${
                     isActive(item.path) ? 'bg-[#37475A]' : ''
                   }`}
                 >
@@ -141,7 +173,7 @@ const Sidebar = () => {
           )}
         </div>
 
-        {/* Inventory Control Section (Week 7) */}
+        {/* Inventory Control Section */}
         <div className="pt-2">
           <button
             onClick={() => toggleSection('inventory')}
@@ -156,7 +188,8 @@ const Sidebar = () => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`block px-4 py-2 rounded hover:bg-[#37475A] transition text-sm ${
+                  onClick={handleLinkClick}
+                  className={`block px-4 py-2.5 rounded hover:bg-[#37475A] transition text-sm ${
                     isActive(item.path) ? 'bg-[#37475A]' : ''
                   }`}
                 >
@@ -168,7 +201,7 @@ const Sidebar = () => {
           )}
         </div>
 
-        {/* Replenishment & Alerts Section (Week 8) */}
+        {/* Replenishment & Alerts Section */}
         <div className="pt-2">
           <button
             onClick={() => toggleSection('replenishment')}
@@ -183,7 +216,8 @@ const Sidebar = () => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`block px-4 py-2 rounded hover:bg-[#37475A] transition text-sm ${
+                  onClick={handleLinkClick}
+                  className={`block px-4 py-2.5 rounded hover:bg-[#37475A] transition text-sm ${
                     isActive(item.path) ? 'bg-[#37475A]' : ''
                   }`}
                 >
@@ -195,7 +229,7 @@ const Sidebar = () => {
           )}
         </div>
 
-        {/* Reports & Analytics Section (Week 9) */}
+        {/* Reports & Analytics Section */}
         <div className="pt-2">
           <button
             onClick={() => toggleSection('reports')}
@@ -210,7 +244,8 @@ const Sidebar = () => {
                 <Link
                   key={item.path}
                   to={item.path}
-                  className={`block px-4 py-2 rounded hover:bg-[#37475A] transition text-sm ${
+                  onClick={handleLinkClick}
+                  className={`block px-4 py-2.5 rounded hover:bg-[#37475A] transition text-sm ${
                     isActive(item.path) ? 'bg-[#37475A]' : ''
                   }`}
                 >
@@ -228,7 +263,8 @@ const Sidebar = () => {
             <Link
               key={item.path}
               to={item.path}
-              className={`block px-4 py-2 rounded hover:bg-[#37475A] transition ${
+              onClick={handleLinkClick}
+              className={`block px-4 py-2.5 rounded hover:bg-[#37475A] transition ${
                 isActive(item.path) ? 'bg-[#37475A]' : ''
               }`}
             >
@@ -240,6 +276,18 @@ const Sidebar = () => {
       </nav>
     </aside>
   );
+};
+
+Sidebar.propTypes = {
+  isOpen: PropTypes.bool,
+  onClose: PropTypes.func,
+  isMobile: PropTypes.bool,
+};
+
+Sidebar.defaultProps = {
+  isOpen: false,
+  onClose: () => {},
+  isMobile: false,
 };
 
 export default Sidebar;

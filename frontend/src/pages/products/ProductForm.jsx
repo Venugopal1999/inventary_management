@@ -148,53 +148,51 @@ const ProductForm = () => {
   }
 
   return (
-    <div>
-      <h1 className="text-3xl font-bold text-gray-900 mb-6">
+    <div className="px-3 sm:px-4 lg:px-0">
+      <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-gray-900 mb-4 sm:mb-6">
         {isEdit ? 'Edit Product' : 'Create New Product'}
       </h1>
 
       {/* Stock Information - Only show when editing */}
       {isEdit && stockData && (
-        <div className="card mb-6 bg-blue-50 border border-blue-200">
-          <div className="flex items-center justify-between">
-            <div>
-              <h3 className="text-lg font-semibold text-gray-900 mb-3">
-                Current Stock Information
-              </h3>
-              <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Status</p>
-                  <StockBadge state={stockData.state} size="md" />
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">On Hand</p>
-                  <p className="text-2xl font-bold text-gray-900">
-                    {Math.floor(stockData.qty_on_hand || 0)}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Available</p>
-                  <p className="text-2xl font-bold text-green-600">
-                    {Math.floor(stockData.qty_available || 0)}
-                  </p>
-                </div>
-                <div>
-                  <p className="text-sm text-gray-600 mb-1">Reserved</p>
-                  <p className="text-2xl font-bold text-orange-600">
-                    {Math.floor(stockData.qty_reserved || 0)}
-                  </p>
-                </div>
+        <div className="card mb-4 sm:mb-6 bg-blue-50 border border-blue-200 p-4 sm:p-6">
+          <div>
+            <h3 className="text-base sm:text-lg font-semibold text-gray-900 mb-3">
+              Current Stock Information
+            </h3>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 sm:gap-4">
+              <div>
+                <p className="text-xs sm:text-sm text-gray-600 mb-1">Status</p>
+                <StockBadge state={stockData.state} size="md" />
+              </div>
+              <div>
+                <p className="text-xs sm:text-sm text-gray-600 mb-1">On Hand</p>
+                <p className="text-xl sm:text-2xl font-bold text-gray-900">
+                  {Math.floor(stockData.qty_on_hand || 0)}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs sm:text-sm text-gray-600 mb-1">Available</p>
+                <p className="text-xl sm:text-2xl font-bold text-green-600">
+                  {Math.floor(stockData.qty_available || 0)}
+                </p>
+              </div>
+              <div>
+                <p className="text-xs sm:text-sm text-gray-600 mb-1">Reserved</p>
+                <p className="text-xl sm:text-2xl font-bold text-orange-600">
+                  {Math.floor(stockData.qty_reserved || 0)}
+                </p>
               </div>
             </div>
           </div>
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="card">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <form onSubmit={handleSubmit} className="card p-4 sm:p-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
           {/* Product Name */}
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+          <div className="sm:col-span-2">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Product Name *
             </label>
             <input
@@ -202,17 +200,17 @@ const ProductForm = () => {
               name="name"
               value={formData.name}
               onChange={handleChange}
-              className="input"
+              className="input text-sm sm:text-base"
               required
             />
             {errors.name && (
-              <p className="text-red-500 text-sm mt-1">{errors.name[0]}</p>
+              <p className="text-red-500 text-xs sm:text-sm mt-1">{errors.name[0]}</p>
             )}
           </div>
 
           {/* Description */}
-          <div className="md:col-span-2">
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+          <div className="sm:col-span-2">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Description
             </label>
             <textarea
@@ -220,14 +218,14 @@ const ProductForm = () => {
               value={formData.description}
               onChange={handleChange}
               rows="3"
-              className="input"
+              className="input text-sm sm:text-base"
             />
           </div>
 
           {/* SKU (for simple products) */}
           {formData.sku_policy === 'simple' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 SKU *
               </label>
               <input
@@ -235,25 +233,25 @@ const ProductForm = () => {
                 name="sku"
                 value={formData.sku}
                 onChange={handleChange}
-                className="input"
+                className="input text-sm sm:text-base"
                 required
               />
               {errors.sku && (
-                <p className="text-red-500 text-sm mt-1">{errors.sku[0]}</p>
+                <p className="text-red-500 text-xs sm:text-sm mt-1">{errors.sku[0]}</p>
               )}
             </div>
           )}
 
           {/* Category */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Category
             </label>
             <select
               name="category_id"
               value={formData.category_id}
               onChange={handleChange}
-              className="input"
+              className="input text-sm sm:text-base"
             >
               <option value="">Select Category</option>
               {categories.map((cat) => (
@@ -266,14 +264,14 @@ const ProductForm = () => {
 
           {/* UOM */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Unit of Measure *
             </label>
             <select
               name="uom_id"
               value={formData.uom_id}
               onChange={handleChange}
-              className="input"
+              className="input text-sm sm:text-base"
               required
             >
               <option value="">Select UOM</option>
@@ -284,13 +282,13 @@ const ProductForm = () => {
               ))}
             </select>
             {errors.uom_id && (
-              <p className="text-red-500 text-sm mt-1">{errors.uom_id[0]}</p>
+              <p className="text-red-500 text-xs sm:text-sm mt-1">{errors.uom_id[0]}</p>
             )}
           </div>
 
           {/* Barcode */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Barcode
             </label>
             <input
@@ -298,14 +296,14 @@ const ProductForm = () => {
               name="barcode"
               value={formData.barcode}
               onChange={handleChange}
-              className="input"
+              className="input text-sm sm:text-base"
             />
           </div>
 
           {/* Cost */}
           {formData.sku_policy === 'simple' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Cost
               </label>
               <input
@@ -315,7 +313,7 @@ const ProductForm = () => {
                 onChange={handleChange}
                 step="0.01"
                 min="0"
-                className="input"
+                className="input text-sm sm:text-base"
               />
             </div>
           )}
@@ -323,7 +321,7 @@ const ProductForm = () => {
           {/* Price */}
           {formData.sku_policy === 'simple' && (
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">
+              <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
                 Price
               </label>
               <input
@@ -333,14 +331,14 @@ const ProductForm = () => {
                 onChange={handleChange}
                 step="0.01"
                 min="0"
-                className="input"
+                className="input text-sm sm:text-base"
               />
             </div>
           )}
 
           {/* Tax Rate */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Tax Rate (%)
             </label>
             <input
@@ -351,13 +349,13 @@ const ProductForm = () => {
               step="0.01"
               min="0"
               max="100"
-              className="input"
+              className="input text-sm sm:text-base"
             />
           </div>
 
           {/* Shelf Life Days */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Shelf Life (Days)
             </label>
             <input
@@ -366,20 +364,20 @@ const ProductForm = () => {
               value={formData.shelf_life_days}
               onChange={handleChange}
               min="0"
-              className="input"
+              className="input text-sm sm:text-base"
             />
           </div>
 
           {/* Status */}
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">
+            <label className="block text-xs sm:text-sm font-medium text-gray-700 mb-1">
               Status
             </label>
             <select
               name="status"
               value={formData.status}
               onChange={handleChange}
-              className="input"
+              className="input text-sm sm:text-base"
             >
               <option value="active">Active</option>
               <option value="inactive">Inactive</option>
@@ -388,7 +386,7 @@ const ProductForm = () => {
           </div>
 
           {/* Checkboxes */}
-          <div className="md:col-span-2 flex space-x-6">
+          <div className="sm:col-span-2 flex flex-col sm:flex-row gap-3 sm:gap-6">
             <label className="flex items-center">
               <input
                 type="checkbox"
@@ -397,7 +395,7 @@ const ProductForm = () => {
                 onChange={handleChange}
                 className="mr-2"
               />
-              <span className="text-sm text-gray-700">Track Serial Numbers</span>
+              <span className="text-xs sm:text-sm text-gray-700">Track Serial Numbers</span>
             </label>
 
             <label className="flex items-center">
@@ -408,21 +406,21 @@ const ProductForm = () => {
                 onChange={handleChange}
                 className="mr-2"
               />
-              <span className="text-sm text-gray-700">Track Batch/Lot Numbers</span>
+              <span className="text-xs sm:text-sm text-gray-700">Track Batch/Lot Numbers</span>
             </label>
           </div>
 
           {/* Form Actions */}
-          <div className="md:col-span-2 flex justify-end space-x-4 pt-4 border-t">
+          <div className="sm:col-span-2 flex flex-col-reverse sm:flex-row justify-end gap-3 sm:gap-4 pt-4 border-t">
             <button
               type="button"
               onClick={() => navigate('/products')}
-              className="btn-secondary"
+              className="btn-secondary w-full sm:w-auto"
               disabled={loading}
             >
               Cancel
             </button>
-            <button type="submit" className="btn-primary" disabled={loading}>
+            <button type="submit" className="btn-primary w-full sm:w-auto" disabled={loading}>
               {loading ? 'Saving...' : isEdit ? 'Update Product' : 'Create Product'}
             </button>
           </div>

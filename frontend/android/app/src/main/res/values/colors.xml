@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Primary brand color - Indigo 600 -->
+    <color name="colorPrimary">#4F46E5</color>
+    <!-- Darker shade for status bar - Indigo 700 -->
+    <color name="colorPrimaryDark">#4338CA</color>
+    <!-- Accent color - Indigo 500 -->
+    <color name="colorAccent">#6366F1</color>
+
+    <!-- Splash screen background -->
+    <color name="splash_background">#4F46E5</color>
+
+    <!-- Additional colors matching your Tailwind theme -->
+    <color name="background">#F9FAFB</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="text_primary">#111827</color>
+    <color name="text_secondary">#6B7280</color>
+    <color name="success">#10B981</color>
+    <color name="warning">#F59E0B</color>
+    <color name="error">#EF4444</color>
+</resources>
