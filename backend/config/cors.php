@@ -12,7 +12,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => array_filter([
+    'allowed_origins' => [
         'http://localhost:5173',
         'http://127.0.0.1:5173',
         'http://localhost:5174',
@@ -20,11 +20,12 @@ return [
         'http://localhost:5175',
         'http://127.0.0.1:5175',
         'http://frontend.test',
-        env('FRONTEND_URL'),
-    ]),
+        'https://inventarymanagement.vercel.app',
+    ],
 
     'allowed_origins_patterns' => [
         '/^https:\/\/.*\.vercel\.app$/',
+        '/^https:\/\/.*\.onrender\.com$/',
     ],
 
     'allowed_headers' => ['*'],

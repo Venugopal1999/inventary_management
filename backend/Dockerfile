@@ -41,8 +41,7 @@ RUN mkdir -p storage/framework/{sessions,views,cache} \
     && mkdir -p bootstrap/cache \
     && chmod -R 775 storage bootstrap/cache
 
-# Cache configuration
-RUN php artisan config:cache || true
+# Cache routes and views (but NOT config - needs runtime env vars)
 RUN php artisan route:cache || true
 RUN php artisan view:cache || true
 
