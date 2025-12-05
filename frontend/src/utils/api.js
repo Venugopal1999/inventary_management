@@ -41,8 +41,8 @@ const api = axios.create({
     'Content-Type': 'application/json',
     'Accept': 'application/json',
   },
-  // Disable credentials for mobile (using token auth instead)
-  withCredentials: !Capacitor.isNativePlatform(),
+  // Disable credentials - using token auth instead
+  withCredentials: false,
   timeout: 30000, // 30 second timeout for slower mobile connections
 });
 
