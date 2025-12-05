@@ -45,5 +45,5 @@ RUN mkdir -p storage/framework/{sessions,views,cache} \
 # Expose port (Render sets PORT env variable)
 EXPOSE 10000
 
-# Start command - clear caches, migrate, seed, then serve
-CMD php artisan config:clear && php artisan route:clear && php artisan cache:clear && php artisan migrate --force && php artisan db:seed --force && php artisan serve --host=0.0.0.0 --port=${PORT:-10000}
+# Start command - clear caches, migrate, then serve
+CMD php artisan config:clear && php artisan route:clear && php artisan cache:clear && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=${PORT:-10000}
